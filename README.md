@@ -39,7 +39,7 @@ To run the project locally, follow these steps:
 
 ## Deployment
 
-The application is deployed on Netlify. [Link to Vercel Deployment]()
+The application is deployed on Netlify. [Link to Vercel Deployment](https://1-percent-club.vercel.app/)
 
 
 ## Notes
