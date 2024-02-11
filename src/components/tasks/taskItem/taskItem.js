@@ -66,7 +66,7 @@ const TaskItem = (props) =>{
                         open={state['right']}
                         onClose={toggleDrawer('right', false)}
                     >
-                        <Form onCloseDrawer={() => setState({ ...state, right: false })} task = {props.task} tasks ={props.tasks} setTasks ={props.setTasks}/>
+                        <Form onCloseDrawer={() => setState({ ...state, right: false })} task = {props.task} tasks ={props.tasks} setTasks ={props.setTasks} setPieData ={props.setPieData}/>
                     </Drawer>
 
 

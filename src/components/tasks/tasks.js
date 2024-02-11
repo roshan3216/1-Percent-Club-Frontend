@@ -32,7 +32,7 @@ const Tasks = (props) =>{
             <div className="task-item-container">
 
                 {tasks.map((task) =>{
-                    return <TaskItem key={task._id} task= {task} tasks = {tasks} setTasks = {props.setTasks} />
+                    return <TaskItem key={task._id} task= {task} tasks = {tasks} setTasks = {props.setTasks} setPieData = {props.setPieData}/>
                 })}
             </div>
         </div>

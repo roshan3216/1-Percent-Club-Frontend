@@ -335,6 +335,7 @@ code {
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
+  min-height: 330px;
 }
 
 .task-item{

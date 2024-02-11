@@ -5,7 +5,25 @@ import moment from 'moment';
 import Form from "../form/form";
 
 
+const customSortDesc = (a,b) =>{
+    if(a < b){
+        return 1;
+    }
+    if(a > b){
+        return -1;
+    }
+    return 0;
+}
 
+const customSortAsc = (a,b) =>{
+    if(a < b){
+        return -1;
+    }
+    if(a > b){
+        return 1;
+    }
+    return 0;
+}
 
 const Todos = (props) =>{
     const [state, setState] = useState({
@@ -26,39 +44,12 @@ const Todos = (props) =>{
         if(tasks && !tasks.length){
             return ;
         }
-        const dueTasks = [];
         const today = moment().format('YYYY-MM-DD')
-        const remTasks = [];
 
-        tasks.forEach((task)=>{
-            if(!task.completed && task.dueDate <= today ){
-                dueTasks.push(task);
-            }else{
-                remTasks.push(task);
-            }
-        });
+        const getDueTasks = tasks.filter((task) => !task.completed && task.dueDate <= today )
+                            .sort((a,b) =>customSortAsc(a.dueDate, b.dueDate));
 
-        dueTasks.sort((a,b)=>{
-            if(a.dueDate < b.dueDate){
-                return -1;
-            }
-            if(a.dueDate > b.dueDate){
-                return 1;
-            }
-            return 0;
-        });
-
-        // remTasks.sort((a,b)=>{
-        //     if(a.dueDate < b.dueDate){
-        //         return 1;
-        //     }
-        //     if(a.dueDate > b.dueDate){
-        //         return -1;
-        //     }
-        //     return 0;
-        // });
-
-        const sorted = [...dueTasks];
+        const sorted = [...getDueTasks];
         setTempTasks(sorted);
         // props.setTasks(sorted);
     }
@@ -68,39 +59,10 @@ const Todos = (props) =>{
             return ;
         }
 
-        const todayTasks = [];
         const today = moment().format('YYYY-MM-DD')
-        const remTasks = [];
+        const getTodayTasks = tasks.filter((task) => task.dueDate >= today).sort((a,b) => customSortAsc(a.dueDate, b.dueDate));
 
-        tasks.forEach((task)=>{
-            if(task.dueDate >= today){
-                todayTasks.push(task);
-            }else{
-                remTasks.push(task);
-            }
-        });
-
-        todayTasks.sort((a,b) =>{
-            if(a.dueDate < b.dueDate){
-                return -1;
-            }
-            if(a.dueDate > b.dueDate){
-                return 1;
-            }
-            return 0;
-        });
-
-        // remTasks.sort((a,b)=>{
-        //     if(a.dueDate < b.dueDate){
-        //         return 1;
-        //     }
-        //     if(a.dueDate > b.dueDate){
-        //         return -1;
-        //     }
-        //     return 0;
-        // });
-
-        const sorted = [...todayTasks];
+        const sorted = [...getTodayTasks];
         setTempTasks(sorted);
         // props.setTasks(sorted);
     }
@@ -110,40 +72,10 @@ const Todos = (props) =>{
             return ;
         }
 
-        const tomorrowTasks = [];
         const tomorrow = moment().add(1, 'day').format('YYYY-MM-DD');
-        
-        const remTasks = [];
+        const getTomorrowTasks = tasks.filter((task) => task.dueDate >= tomorrow).sort((a,b) => customSortAsc(a.dueDate, b.dueDate))
 
-        tasks.forEach((task)=>{
-            if(task.dueDate >= tomorrow){
-                tomorrowTasks.push(task);
-            }else{
-                remTasks.push(task);
-            }
-        });
-
-        tomorrowTasks.sort((a,b)  =>{
-            if(a.dueDate < b.dueDate){
-                return -1;
-            }
-            if(a.dueDate > b.dueDate){
-                return 1;
-            }
-            return 0;
-        });
-
-        // remTasks.sort((a,b) =>{
-        //     if(a.dueDate < b.dueDate){
-        //         return 1;
-        //     }
-        //     if(a.dueDate > b.dueDate){
-        //         return -1;
-        //     }
-        //     return 0;
-        // });
-
-        const sorted = [...tomorrowTasks];
+        const sorted = [...getTomorrowTasks];
         setTempTasks(sorted);
         // props.setTasks(sorted);
     }
@@ -153,19 +85,10 @@ const Todos = (props) =>{
             return ;
         }
 
-        const sorted = [...tasks];
+        const getSorted = [...tasks];
+        getSorted.sort((a,b) => customSortDesc(a.priority, b.priority));
 
-        sorted.sort((a,b) =>{
-            if(a.priority < b.priority){
-                return 1;
-            }
-            if(a.priority > b.priority){
-                return -1;
-            }
-            return 0;
-        });
-
-        setTempTasks(sorted);
+        setTempTasks(getSorted);
         // props.setTasks(sorted);
     }
 
@@ -173,21 +96,9 @@ const Todos = (props) =>{
         if(tasks && !tasks.length){
             return ;
         }
-
-        const sorted = [...tasks];
-
-        sorted.sort((a,b) =>{
-            if(a.createdAt < b.createdAt){
-                return 1;
-            }
-            if(a.createdAt > b.createdAt){
-                return -1;
-            }
-            return 0;
-        });
-        setTempTasks(sorted);
-
-        // props.setTasks(sorted);
+        const getSorted = [...tasks].sort((a,b ) => customSortDesc(a.createdAt, b.createdAt)) ;
+        setTempTasks(getSorted);
+        
     }
 
     const sortMap = {
@@ -248,7 +159,7 @@ const Todos = (props) =>{
                 </FormControl>
             </div>
 
-            <Tasks tasks = {tempTasks} setTasks = {props.setTasks}/>
+            <Tasks tasks = {tempTasks} setTasks = {props.setTasks} setPieData = {props.setPieData}/>
 
         </div>
         <div className="task-button">
@@ -261,7 +172,7 @@ const Todos = (props) =>{
                 open={state['right']}
                 onClose={toggleDrawer('right', false)}
             >
-                <Form onCloseDrawer={() => setState({ ...state, right: false })} task = {props.task} tasks = {props.tasks} setTasks ={props.setTasks}/>
+                <Form onCloseDrawer={() => setState({ ...state, right: false })} task = {props.task} tasks = {props.tasks} setTasks ={props.setTasks} setPieData = {props.setPieData}/>
             </Drawer>
 
         </div>

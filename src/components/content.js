@@ -6,6 +6,7 @@ import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import CheckCircleOutlineSharpIcon from '@mui/icons-material/CheckCircleOutlineSharp';
 import PendingActionsSharpIcon from '@mui/icons-material/PendingActionsSharp';
 import Todos from "./todos/todo";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -19,7 +20,7 @@ const Content = () =>{
         { name: 'Pending Tasks', value: 20 },
         { name: 'Due Tasks', value: 50 },
     ]) 
-
+    const navigate = useNavigate();
     
     useEffect(() =>{
         ( async() => {
@@ -45,6 +46,8 @@ const Content = () =>{
 
                 });
 
+                console.log(dataUtil, '[dataUtil]', today, '[today]')
+
                 setPieData([
                     { name: 'Completed Tasks', value: dataUtil.completed.length },
                     { name: 'Pending Tasks', value: dataUtil.pending.length },
@@ -53,6 +56,7 @@ const Content = () =>{
                 
             } catch (err) {
                 console.error(err,'[error in CHartUtil');
+                navigate('/login')
             }
         })();
     },[]);
@@ -103,7 +107,7 @@ const Content = () =>{
 
 
             <div className="task-container"> 
-                <Todos tasks = {data} setTasks = {setData}/>
+                <Todos tasks = {data} setTasks = {setData} setPieData = {setPieData}/>
             </div>
         </div>
     );
