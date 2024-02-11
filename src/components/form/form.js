@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createTask, updateTask } from "../../api";
+import moment from "moment";
 
 
 const Form = (props) =>{
@@ -39,7 +40,30 @@ const Form = (props) =>{
                 });
                 const tasks = props.tasks;
                 const filteredArray = tasks.filter((t) => t._id !== props.task._id);
-                props.setTasks([...filteredArray,resp.data])
+                const dataUtil = {
+                    completed: [],
+                    pending: [],
+                    due: [],
+                }
+                const arr = [...filteredArray,resp.data];
+                const today = moment().format('YYYY-MM-DD');
+                arr.forEach((a) =>{
+                    if(a.completed && a.dueDate===today){
+                        dataUtil.completed.push(a);
+                    }else if(!a.completed && a.dueDate > today){
+                        dataUtil.pending.push(a);
+                    }else if(!a.completed && a.dueDate <= today){ 
+                        dataUtil.due.push(a);
+                    }
+
+                });
+
+                props.setPieData([
+                    { name: 'Completed Tasks', value: dataUtil.completed.length },
+                    { name: 'Pending Tasks', value: dataUtil.pending.length },
+                    { name: 'Due Tasks', value: dataUtil.due.length },
+                ]);
+                props.setTasks(arr);
                 props.onCloseDrawer();
     
             } catch (err) {
@@ -49,7 +73,30 @@ const Form = (props) =>{
             console.log('Trying to create task');
             try {
                 const resp = await createTask(formData);
-                props.setTasks([...props.tasks, resp.data]);
+                const arr  = [...props.tasks, resp.data];
+                const dataUtil = {
+                    completed: [],
+                    pending: [],
+                    due: [],
+                }
+                const today = moment().format('YYYY-MM-DD');
+                arr.forEach((a) =>{
+                    if(a.completed && a.dueDate===today){
+                        dataUtil.completed.push(a);
+                    }else if(!a.completed && a.dueDate > today){
+                        dataUtil.pending.push(a);
+                    }else if(!a.completed && a.dueDate <= today){ 
+                        dataUtil.due.push(a);
+                    }
+
+                });
+
+                props.setPieData([
+                    { name: 'Completed Tasks', value: dataUtil.completed.length },
+                    { name: 'Pending Tasks', value: dataUtil.pending.length },
+                    { name: 'Due Tasks', value: dataUtil.due.length },
+                ]);
+                props.setTasks(arr);
                 props.onCloseDrawer();
             } catch (err) {
                 console.error(err, '[error in task creation]');
